@@ -1,6 +1,7 @@
 require('dotenv').config();
 const app = require('./app');
 const { db } = require('./database/config');
+const http = require('http');
 const initModel = require('./models/initModels');
 const { Server } = require('socket.io');
 const Sockets = require('./sockets');
@@ -19,11 +20,12 @@ db.sync()
   .catch((error) => console.log(error));
 
 const port = +process.env.PORT || 3200;
-const server=app.listen(port, () => {
-  console.log(`App Running on port ${port}`);
-});
 
-const io = new Server(server, {
+const serverHttp = http.createServer(app);
+serverHttp.listen(process.env.HTTP_PORT, process.env.IP);
+serverHttp.on('listening', () => console.info(`Notes App running at http://${process.env.IP}:${process.env.HTTP_PORT}`));
+
+const io = new Server(serverHttp, {
   cors: {
     origin: '*',
     methods: ['GET, POST'],
