@@ -21,7 +21,7 @@ const swaggerDocs=(app, port)=>{
         res.setHeader('Content-type', 'application/json')
         res.send(swaggerSpec)
     })
-    console.log(`Docs are avalible at http://localhost:${port}/api/v1/docs`)
+    console.log(`Docs are avalible at https://localhost:${port}/api/v1/docs`)
 }
 
 module.exports=swaggerDocs;

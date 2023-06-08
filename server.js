@@ -1,10 +1,12 @@
 require('dotenv').config();
 const app = require('./app');
 const { db } = require('./database/config');
-const http = require('http');
+const https = require('https');
+const fs = require('fs');
 const initModel = require('./models/initModels');
 const { Server } = require('socket.io');
 const Sockets = require('./sockets');
+const path = require('path');
 
 
 //LA AUTENTICACIÓN CON LA BASE DE DATOS
@@ -19,17 +21,17 @@ db.sync()
   .then(() => console.log('Database Synced! 🤩'))
   .catch((error) => console.log(error));
 
-const port = +process.env.PORT || 3200;
 
-const serverHttp = http.createServer(app);
-serverHttp.listen(process.env.HTTP_PORT, process.env.IP);
-serverHttp.on('listening', () => console.info(`Notes App running at http://${process.env.IP}:${process.env.HTTP_PORT}`));
+const port = +process.env.HTTP_PORT || 3443;
 
-const io = new Server(serverHttp, {
-  cors: {
-    origin: '*',
-    methods: ['GET, POST'],
-  },
+const sslServer=https.createServer({
+  key:fs.readFileSync(path.join(__dirname,'cern','key.pem')),
+  cert:fs.readFileSync(path.join(__dirname,'cern','cert.pem'))
+},app)
+
+sslServer.listen(port, () => {
+  console.log(`App running on port ${port}...`);
 });
 
-new Sockets(io)
+
+

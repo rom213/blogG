@@ -17,7 +17,7 @@ const postRouter = require('./routes/post.routes');
 const userRouter = require('./routes/user.routes');
 
 const app = express();
-const port=+process.env.PORT || 3100
+const port=+process.env.PORT || 3443
 
 const limiter = rateLimit({
   max: 100000,
